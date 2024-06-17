@@ -11,21 +11,20 @@ const url = `mongodb://${DB_HOST}:${DB_PORT}`;
 class DBClient {
   constructor() {
     MongoClient.connect(url, { useUnifiedTopology: true }, (err, client) => {
-      if (!err) {
-        // console.log('Connected successfully to server');
+      if (err) {
+        console.log(err.message);
+        this.db = false;
+      } else {
         this.db = client.db(DB_DATABASE);
         this.usersCollection = this.db.collection('users');
         this.filesCollection = this.db.collection('files');
-      } else {
-        console.log(err.message);
-        this.db = false;
       }
     });
   }
 
   /**
-   * Checks if connection to Redis is Alive
-   * @return {boolean} true if connection alive or false if not
+   * Checks if connection to Mongodb is Alive
+   * @return {boolean} true if connection alive else false.
    */
   isAlive() {
     return Boolean(this.db);
@@ -33,7 +32,7 @@ class DBClient {
 
   /**
    * Returns the number of documents in the collection users
-   * @return {number} amount of users
+   * @return {number} number of users
    */
   async nbUsers() {
     const numberOfUsers = this.usersCollection.countDocuments();
@@ -42,7 +41,7 @@ class DBClient {
 
   /**
    * Returns the number of documents in the collection files
-   * @return {number} amount of files
+   * @return {number} number of files
    */
   async nbFiles() {
     const numberOfFiles = this.filesCollection.countDocuments();
