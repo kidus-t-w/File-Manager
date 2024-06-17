@@ -1,16 +1,32 @@
+// utils/redis.js
+
 import { createClient } from 'redis';
 import { promisify } from 'util';
+import winston from 'winston';
+
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    // Adjusted the arrow function to return immediately
+    winston.format.printf(({ timestamp, level, message }) => `${timestamp} ${level}: ${message}`),
+  ),
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: 'combined.log' }),
+  ],
+});
 
 class RedisClient {
   constructor() {
     this.client = createClient();
 
     this.client.on('error', (err) => {
-      console.error(`Redis client not connected to the server: ${err.message}`);
+      logger.error(`Redis client not connected to the server: ${err.message}`);
     });
 
     this.client.on('connect', () => {
-      console.log('Redis client connected to the server');
+      logger.info('Redis client connected to the server');
     });
 
     this.getAsync = promisify(this.client.get).bind(this.client);
@@ -23,7 +39,7 @@ class RedisClient {
   }
 
   async get(key) {
-    return await this.getAsync(key);
+    return this.getAsync(key);
   }
 
   async set(key, value, duration) {
