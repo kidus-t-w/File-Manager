@@ -18,8 +18,9 @@ const routeController = (app) => {
 
   // User Controller
   router.post('/users', (req, res) => {
-    UserController.postNew(req, res);
+    UsersController.postNew(req, res);
   });
+
 };
 
 export default routeController;
