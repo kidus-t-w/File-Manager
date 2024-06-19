@@ -47,6 +47,13 @@ class DBClient {
     const numberOfFiles = this.filesCollection.countDocuments();
     return numberOfFiles;
   }
+
+  async getUser(query) {
+    console.log('QUERY IN DB.JS', query);
+    const user = await this.db.collection('users').findOne(query);// query is t going to be the user_id or email. to find the user.
+    console.log('GET USER IN DB.JS', user);
+    return user;
+  }
 }
 
 const dbClient = new DBClient();
