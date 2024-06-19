@@ -1,14 +1,14 @@
-import express from 'express';
-import routeController from './routes/index';
+import router from './routes';
 
-const app = express();
+const express = require('express');
+
+const server = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(express.json());
-routeController(app);
+server.use(express.json());
+server.use(express.urlencoded({ extended: true }));
+router(server);
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+server.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
 });
-
-export default app;
